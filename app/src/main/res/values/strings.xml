@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">ProyectoFinalMoviles_Gastos</string>
+    <string-array name="valores_combobox">
+        <item>Todas</item>
+        <item>Gastos hormiga</item>
+        <item>Escuela</item>
+        <item>Vacaciones</item>
+    </string-array>
+</resources>
