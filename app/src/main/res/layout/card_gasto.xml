@@ -11,14 +11,14 @@
         android:id="@+id/tituloGasto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Gasto 2"
+        android:text="Titulo"
         android:textSize="18sp"
         android:textColor="#000"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Descripción del gasto 2"
+        android:text="Haga click para ver más detalles"
         android:textColor="#888"/>
 
 </LinearLayout>
