@@ -4,29 +4,92 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.Spinner
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import moviles.gastos.datos.BaseDatosGastos
+import moviles.gastos.datos.GastoDao
+import moviles.gastos.vista.AgregarCategoriaDialogo
+import moviles.gastos.vista.AgregarGastoDialogo
+import moviles.gastos.vista.CategoriaAgregadaListener
+import moviles.gastos.vista.GastoAgregadoListener
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), CategoriaAgregadaListener, GastoAgregadoListener {
     private var recyclerView: RecyclerView? = null
-    private var comboBox: Spinner? = null
+    private lateinit var comboBox: Spinner
     private var sharedPreferences: SharedPreferences? = null
+    private lateinit var gastoDao: GastoDao
+    private var categoriaSeleccionadaLista: String = "Todas"
+    private var agregarGastoDialogo: AgregarGastoDialogo = AgregarGastoDialogo(this, this)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         recyclerView = findViewById(R.id.recyclerView)
         comboBox = findViewById(R.id.comboBox)
         sharedPreferences = getSharedPreferences("categorias", MODE_PRIVATE)
+        gastoDao = BaseDatosGastos.getInstance(this).gastoDao
+
         val categoriasList = obtenerCategoriasDesdeSharedPreferences()
-        cargarGastos(categoriasList)
         categoriasList.add(0,"Todas")
+
         configurarSpinner(categoriasList)
+
+        actualizarVista()
+
+        comboBox.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val seleccion = comboBox.getItemAtPosition(position)?.toString() ?: "Ninguna"
+                if(!seleccion.equals("Ninguna")){
+                    categoriaSeleccionadaLista = seleccion;
+                    actualizarVista()
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+        }
+    }
+
+    private fun actualizarVista(){
+        actualizarTotalGastos(categoriaSeleccionadaLista)
+
+        val categoriasList = obtenerCategoriasDesdeSharedPreferences()
+
+        if(categoriaSeleccionadaLista.equals("Todas")){
+            cargarGastos(categoriasList)
+        }else{
+            val categorias = ArrayList<String>()
+            categorias.add(categoriaSeleccionadaLista)
+            cargarGastos(categorias)
+        }
+    }
+
+    fun actualizarTotalGastos(categoriaSeleccionada: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val total: Float = if (categoriaSeleccionada.equals("Todas")) {
+                gastoDao.obtenerTotalGastos()
+            } else {
+                gastoDao.obtenerTotalGastosPorCategoria(categoriaSeleccionada) ?: 0f
+            }
+
+            runOnUiThread {
+                val textView = findViewById<TextView>(R.id.tvTotalGastos)
+                textView.text = "Total de gastos: $$total"
+            }
+        }
     }
 
     private fun cargarGastos(categoriasList: List<String>) {
@@ -52,28 +115,36 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun mostrarDialogoAgregarCategoria(view: View?) {
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("Agregar Categoría")
-        val dialogView = layoutInflater.inflate(R.layout.dialog_layout, null)
-        builder.setView(dialogView)
-        builder.setPositiveButton("Confirmar") { dialog, _ ->
-            val editText = dialogView.findViewById<EditText>(R.id.editText)
-            val categoria = editText.text.toString().trim()
-
-            if (categoria.isNotEmpty()) {
-                val categorias: MutableSet<String> = HashSet(sharedPreferences!!.getStringSet("categorias", HashSet()))
-                categorias.add(categoria)
-                sharedPreferences!!.edit().putStringSet("categorias", categorias).apply()
-
-                val categoriasList = obtenerCategoriasDesdeSharedPreferences()
-                cargarGastos(categoriasList)
-                categoriasList.add(0,"Todas")
-                configurarSpinner(categoriasList)
-            } else {
-                Toast.makeText(this, "Por favor ingrese una categoría válida", Toast.LENGTH_SHORT).show()
-            }
-        }
-        builder.setNegativeButton("Cancelar", null)
-        builder.show()
+        AgregarCategoriaDialogo.mostrar(this, sharedPreferences, this)
     }
+
+    override fun onCategoriaAgregada() {
+        val categoriasList = obtenerCategoriasDesdeSharedPreferences()
+
+        if(categoriaSeleccionadaLista.equals("Todas")){
+            cargarGastos(categoriasList)
+        }else{
+            val categorias = ArrayList<String>()
+            categorias.add(categoriaSeleccionadaLista)
+            cargarGastos(categorias)
+        }
+        categoriasList.add(0,"Todas")
+        categoriasList.remove(categoriaSeleccionadaLista)
+        categoriasList.add(0, categoriaSeleccionadaLista)
+        configurarSpinner(categoriasList)
+
+        if(agregarGastoDialogo.estaAbierto()){
+            agregarGastoDialogo.cerrarDialogo()
+            agregarGastoDialogo.mostrar(obtenerCategoriasDesdeSharedPreferences())
+        }
+    }
+
+    override fun onGastoAgregado() {
+        actualizarTotalGastos(categoriaSeleccionadaLista)
+    }
+
+    fun mostrarDialogoAgregarGasto(view: View?) {
+        agregarGastoDialogo.mostrar(obtenerCategoriasDesdeSharedPreferences())
+    }
+
 }

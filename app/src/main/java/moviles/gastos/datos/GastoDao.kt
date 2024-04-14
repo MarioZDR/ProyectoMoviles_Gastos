@@ -17,4 +17,9 @@ interface GastoDao {
     @Query("SELECT * FROM gasto WHERE categoria = :categoriaBuscar")
     fun obtenerGastosPorCategoria(categoriaBuscar: String): Flow<List<Gasto>>
 
+    @Query("SELECT SUM(total) FROM gasto")
+    suspend fun obtenerTotalGastos(): Float
+
+    @Query("SELECT COALESCE(SUM(total), 0) FROM gasto WHERE categoria=:categoriaBuscar")
+    suspend fun obtenerTotalGastosPorCategoria(categoriaBuscar: String): Float
 }
