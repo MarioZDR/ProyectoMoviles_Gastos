@@ -79,10 +79,10 @@ class MainActivity : AppCompatActivity(), CategoriaAgregadaListener, GastoAgrega
 
     fun actualizarTotalGastos(categoriaSeleccionada: String) {
         CoroutineScope(Dispatchers.IO).launch {
-            val total: Float = if (categoriaSeleccionada.equals("Todas")) {
-                gastoDao.obtenerTotalGastos()
+            val total: Float = if (categoriaSeleccionada == "Todas") {
+                gastoDao.obtenerTotalGastos() ?: 0f // Manejar el caso cuando es null
             } else {
-                gastoDao.obtenerTotalGastosPorCategoria(categoriaSeleccionada) ?: 0f
+                gastoDao.obtenerTotalGastosPorCategoria(categoriaSeleccionada) ?: 0f // Manejar el caso cuando es null
             }
 
             runOnUiThread {
@@ -91,6 +91,7 @@ class MainActivity : AppCompatActivity(), CategoriaAgregadaListener, GastoAgrega
             }
         }
     }
+
 
     private fun cargarGastos(categoriasList: List<String>) {
         val customAdapter = CustomAdapter(categoriasList.toTypedArray<String>())
