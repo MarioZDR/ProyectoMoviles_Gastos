@@ -1,7 +1,12 @@
 package moviles.gastos
 
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
@@ -22,13 +27,15 @@ import moviles.gastos.vista.AgregarGastoDialogo
 import moviles.gastos.vista.CategoriaAgregadaListener
 import moviles.gastos.vista.GastoAgregadoListener
 
-class MainActivity : AppCompatActivity(), CategoriaAgregadaListener, GastoAgregadoListener {
+class MainActivity : AppCompatActivity(), CategoriaAgregadaListener, GastoAgregadoListener, SensorEventListener {
     private var recyclerView: RecyclerView? = null
     private lateinit var comboBox: Spinner
     private var sharedPreferences: SharedPreferences? = null
     private lateinit var gastoDao: GastoDao
     private var categoriaSeleccionadaLista: String = "Todas"
     private var agregarGastoDialogo: AgregarGastoDialogo = AgregarGastoDialogo(this, this)
+    private lateinit var sensorManager: SensorManager
+    private lateinit var accelerometerSensor: Sensor
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,7 +56,7 @@ class MainActivity : AppCompatActivity(), CategoriaAgregadaListener, GastoAgrega
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val seleccion = comboBox.getItemAtPosition(position)?.toString() ?: "Ninguna"
                 if(!seleccion.equals("Ninguna")){
-                    categoriaSeleccionadaLista = seleccion;
+                    categoriaSeleccionadaLista = seleccion
                     actualizarVista()
                 }
             }
@@ -58,6 +65,22 @@ class MainActivity : AppCompatActivity(), CategoriaAgregadaListener, GastoAgrega
 
             }
         }
+
+        // Inicializar el SensorManager y el Sensor del acelerómetro
+        sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)!!
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Registrar el listener del acelerómetro al reanudar la actividad
+        sensorManager.registerListener(this, accelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        // Desregistrar el listener del acelerómetro al pausar la actividad
+        sensorManager.unregisterListener(this)
     }
 
     private fun actualizarVista(){
@@ -77,7 +100,7 @@ class MainActivity : AppCompatActivity(), CategoriaAgregadaListener, GastoAgrega
     fun actualizarTotalGastos(categoriaSeleccionada: String) {
         CoroutineScope(Dispatchers.IO).launch {
             val total: Float = if (categoriaSeleccionada == "Todas") {
-                gastoDao.obtenerTotalGastos() ?: 0f // Manejar el caso cuando es null
+                gastoDao.obtenerTotalGastos() // Manejar el caso cuando es null
             } else {
                 gastoDao.obtenerTotalGastosPorCategoria(categoriaSeleccionada) ?: 0f // Manejar el caso cuando es null
             }
@@ -88,7 +111,6 @@ class MainActivity : AppCompatActivity(), CategoriaAgregadaListener, GastoAgrega
             }
         }
     }
-
 
     private fun cargarGastos(categoriasList: List<String>) {
         val customAdapter = AdaptadorCategorias(this,categoriasList.toTypedArray<String>())
@@ -139,10 +161,37 @@ class MainActivity : AppCompatActivity(), CategoriaAgregadaListener, GastoAgrega
 
     override fun onGastoAgregado() {
         actualizarTotalGastos(categoriaSeleccionadaLista)
+        cerrarDialogoAgregarGasto()
     }
 
-    fun mostrarDialogoAgregarGasto(view: View?) {
-        agregarGastoDialogo.mostrar(obtenerCategoriasDesdeSharedPreferences(),false)
+    private fun mostrarDialogoAgregarGasto(view: View?) {
+        agregarGastoDialogo.mostrar(obtenerCategoriasDesdeSharedPreferences(), false)
     }
 
+    private fun cerrarDialogoAgregarGasto() {
+        agregarGastoDialogo.cerrarDialogo()
+    }
+
+    companion object {
+        private const val UMBRAL_DE_MOVIMIENTO = 10 // Ajustar dependiendo de qué tanto se debe mover
+    }
+
+    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
+        // Manejar cambios de precisión si es necesario
+    }
+
+    override fun onSensorChanged(event: SensorEvent?) {
+        event?.let {
+            val xAxis = event.values[0]
+            val yAxis = event.values[1]
+            val zAxis = event.values[2]
+
+            // Detectar inclinación hacia atrás
+            if (yAxis < -8.0f) { // Ajusta este umbral según sea necesario
+                mostrarDialogoAgregarGasto(null)
+            }
+        }
+    }
 }
+
+

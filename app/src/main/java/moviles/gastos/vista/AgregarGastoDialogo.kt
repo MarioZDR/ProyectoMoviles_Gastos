@@ -1,6 +1,5 @@
 package moviles.gastos.vista
 
-import android.app.ProgressDialog.show
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -51,7 +50,8 @@ class AgregarGastoDialogo(private val context: Context, private val listener: Ga
                         listener.onGastoAgregado()
                     }
                     Toast.makeText(context, "Gasto agregado correctamente", Toast.LENGTH_SHORT).show()
-                } else {
+                }
+                else {
                     Toast.makeText(context, "Por favor ingrese una descripción, una categoría y un total válidos", Toast.LENGTH_SHORT).show()
                 }
             }
