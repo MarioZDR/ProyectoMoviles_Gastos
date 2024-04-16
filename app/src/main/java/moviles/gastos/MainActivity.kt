@@ -133,7 +133,7 @@ class MainActivity : AppCompatActivity(), CategoriaAgregadaListener, GastoAgrega
 
         if(agregarGastoDialogo.estaAbierto()){
             agregarGastoDialogo.cerrarDialogo()
-            agregarGastoDialogo.mostrar(obtenerCategoriasDesdeSharedPreferences())
+            agregarGastoDialogo.mostrar(obtenerCategoriasDesdeSharedPreferences(),false)
         }
     }
 
@@ -142,7 +142,7 @@ class MainActivity : AppCompatActivity(), CategoriaAgregadaListener, GastoAgrega
     }
 
     fun mostrarDialogoAgregarGasto(view: View?) {
-        agregarGastoDialogo.mostrar(obtenerCategoriasDesdeSharedPreferences())
+        agregarGastoDialogo.mostrar(obtenerCategoriasDesdeSharedPreferences(),false)
     }
 
 }

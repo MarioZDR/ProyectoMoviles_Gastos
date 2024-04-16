@@ -11,18 +11,18 @@
         android:layout_height="wrap_content">
 
         <!-- Button in the top left corner -->
-        <Button
-            android:id="@+id/btnBack"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:text="I"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnRegresar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:background="@drawable/circulo"
-            android:onClick="openNewActivity"
-            />
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="80dp"
+            android:src="@drawable/iconoregresar"
+            app:fabSize="normal"
+            android:contentDescription="A" />
 
         <!-- Centered TextView -->
         <TextView
@@ -79,13 +79,5 @@
         android:src="@drawable/iconoagregar"
         app:fabSize="normal" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/btnRegresar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="80dp"
-        android:src="@drawable/iconoregresar"
-        app:fabSize="normal" />
+
 </FrameLayout>

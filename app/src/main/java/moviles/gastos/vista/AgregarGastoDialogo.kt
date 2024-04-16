@@ -1,9 +1,11 @@
 package moviles.gastos.vista
 
+import android.app.ProgressDialog.show
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
 import android.widget.Toast
@@ -17,7 +19,8 @@ import moviles.gastos.datos.Gasto
 class AgregarGastoDialogo(private val context: Context, private val listener: GastoAgregadoListener) {
     private var alertDialog: AlertDialog? = null
 
-        fun mostrar(categoriasList: List<String>){
+        fun mostrar(categoriasList: List<String>,quitar: Boolean){
+
             val builder = AlertDialog.Builder(context)
             builder.setTitle("Agregar Gasto")
             val dialogView = LayoutInflater.from(context).inflate(R.layout.dialogo_gasto, null)
@@ -26,6 +29,11 @@ class AgregarGastoDialogo(private val context: Context, private val listener: Ga
             val descripcionEditText = dialogView.findViewById<EditText>(R.id.descripcionEditText)
             val categoriaSpinner = dialogView.findViewById<Spinner>(R.id.categoriaSpinner)
             val totalEditText = dialogView.findViewById<EditText>(R.id.totalEditText)
+            val btnOculto=dialogView.findViewById<Button>(R.id.botonAgregarCategoria)
+            if (quitar){
+                btnOculto?.visibility=View.GONE
+                categoriaSpinner.visibility=View.GONE
+            }
 
             val adapter = ArrayAdapter(context, android.R.layout.simple_spinner_item, categoriasList)
             categoriaSpinner.adapter = adapter
@@ -41,8 +49,8 @@ class AgregarGastoDialogo(private val context: Context, private val listener: Ga
                     val gastoDao = BaseDatosGastos.getInstance(context).gastoDao
                     GlobalScope.launch {
                         gastoDao.agregarGasto(gasto)
+                        listener.onGastoAgregado()
                     }
-                    listener.onGastoAgregado()
                     Toast.makeText(context, "Gasto agregado correctamente", Toast.LENGTH_SHORT).show()
                 } else {
                     Toast.makeText(context, "Por favor ingrese una descripción, una categoría y un total válidos", Toast.LENGTH_SHORT).show()
@@ -50,6 +58,8 @@ class AgregarGastoDialogo(private val context: Context, private val listener: Ga
             }
 
             builder.setNegativeButton("Cancelar", null)
+
+
 
             alertDialog = builder.create()
             alertDialog?.show()
@@ -66,5 +76,6 @@ class AgregarGastoDialogo(private val context: Context, private val listener: Ga
     fun cerrarDialogo() {
         alertDialog?.dismiss()
     }
+
 
 }
