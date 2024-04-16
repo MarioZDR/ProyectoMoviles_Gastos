@@ -1,13 +1,17 @@
-package moviles.gastos
+package moviles.gastos.vista
 
+import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import moviles.gastos.ActividadResumen
+import moviles.gastos.R
 
-class CustomAdapter(private val dataset: Array<String>) :
-    RecyclerView.Adapter<CustomAdapter.ViewHolder>() {
+class AdaptadorCategorias(private val context: Context, private val dataset: Array<String>) :
+    RecyclerView.Adapter<AdaptadorCategorias.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val textView: TextView = view.findViewById(R.id.tituloGasto)
@@ -20,7 +24,14 @@ class CustomAdapter(private val dataset: Array<String>) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.textView.text = dataset[position]
+        val categoria = dataset[position]
+        holder.textView.text = categoria
+
+        holder.itemView.setOnClickListener {
+            val intent = Intent(context, ActividadResumen::class.java)
+            intent.putExtra("categoriaSeleccionada", categoria)
+            context.startActivity(intent)
+        }
     }
 
     override fun getItemCount(): Int {

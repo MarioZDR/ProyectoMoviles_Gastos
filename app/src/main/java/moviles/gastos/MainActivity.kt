@@ -6,13 +6,9 @@ import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.EditText
 import android.widget.Spinner
 import android.widget.TextView
-import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.CoroutineScope
@@ -20,6 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import moviles.gastos.datos.BaseDatosGastos
 import moviles.gastos.datos.GastoDao
+import moviles.gastos.vista.AdaptadorCategorias
 import moviles.gastos.vista.AgregarCategoriaDialogo
 import moviles.gastos.vista.AgregarGastoDialogo
 import moviles.gastos.vista.CategoriaAgregadaListener
@@ -93,7 +90,7 @@ class MainActivity : AppCompatActivity(), CategoriaAgregadaListener, GastoAgrega
     }
 
     private fun cargarGastos(categoriasList: List<String>) {
-        val customAdapter = CustomAdapter(categoriasList.toTypedArray<String>())
+        val customAdapter = AdaptadorCategorias(this,categoriasList.toTypedArray<String>())
         recyclerView!!.layoutManager = LinearLayoutManager(this)
         recyclerView!!.adapter = customAdapter
     }
