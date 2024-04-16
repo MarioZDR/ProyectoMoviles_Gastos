@@ -20,7 +20,6 @@ class AgregarGastoDialogo(private val context: Context, private val listener: Ga
     private var alertDialog: AlertDialog? = null
 
         fun mostrar(categoriasList: List<String>,quitar: Boolean){
-
             val builder = AlertDialog.Builder(context)
             builder.setTitle("Agregar Gasto")
             val dialogView = LayoutInflater.from(context).inflate(R.layout.dialogo_gasto, null)

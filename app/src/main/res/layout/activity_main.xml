@@ -73,24 +73,65 @@
         android:columnCount="2">
 
         <!-- Botón "Agregar gasto" -->
-        <Button
-            android:id="@+id/btnAgregarGasto"
+        <RelativeLayout
+            android:id="@+id/layoutAgregarGasto"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_columnWeight="1"
-            android:text="Agregar gasto"
-            android:background="#5555"
-            android:onClick="mostrarDialogoAgregarGasto"/>
+            android:background="@drawable/borde"
+            android:onClick="mostrarDialogoAgregarGasto">
+
+            <TextView
+                android:id="@+id/textAgregarGasto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="16dp"
+                android:text="Agregar gasto"
+                android:textColor="@android:color/black" />
+
+            <ImageView
+                android:id="@+id/imageAgregarGasto"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="16dp"
+                android:src="@drawable/gasto"
+                android:adjustViewBounds="true"
+                android:scaleType="centerInside" />
+        </RelativeLayout>
 
         <!-- Botón "Agregar categoria" -->
-        <Button
-            android:id="@+id/btnAgregarCategoria"
+        <RelativeLayout
+            android:id="@+id/layoutAgregarCategoria"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_columnWeight="1"
-            android:text="Agregar categoria"
-            android:background="#5555"
-            android:onClick="mostrarDialogoAgregarCategoria"/>
+            android:background="@drawable/borde"
+            android:onClick="mostrarDialogoAgregarCategoria"
+            >
+
+            <TextView
+                android:id="@+id/textAgregarCategoria"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="16dp"
+                android:text="Agregar categoría"
+                android:textColor="@android:color/black" />
+
+            <ImageView
+                android:id="@+id/imageAgregarCategoria"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="16dp"
+                android:src="@drawable/categoria"
+                android:adjustViewBounds="true"
+                android:scaleType="centerInside" />
+        </RelativeLayout>
     </GridLayout>
 
 </LinearLayout>
