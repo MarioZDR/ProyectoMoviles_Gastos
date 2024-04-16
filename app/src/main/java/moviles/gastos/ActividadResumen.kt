@@ -20,16 +20,17 @@ import moviles.gastos.datos.Gasto
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import moviles.gastos.vista.AgregarGastoDialogo
 import moviles.gastos.vista.GastoAgregadoListener
+import moviles.gastos.vista.GastoEliminadoListener
 
-class ActividadResumen : AppCompatActivity(), GastoAgregadoListener {
+class ActividadResumen : AppCompatActivity(), GastoAgregadoListener, GastoEliminadoListener {
 
     private lateinit var gastoDao: GastoDao
     private lateinit var categoria: String
     private var recyclerView: RecyclerView? = null
     private lateinit var btnRegreso: FloatingActionButton
     private lateinit var  btnAgregaGasto: FloatingActionButton
+    private lateinit var  tituloCategoria: TextView
     private lateinit var adaptador: AdaptadorGastos
-    private lateinit var btnCategoria: Button
     private var sharedPreferences: SharedPreferences? = null
     private var listaGastosFlow: MutableStateFlow<List<Gasto>> = MutableStateFlow(emptyList())
     private var agregarGastoDialogo: AgregarGastoDialogo = AgregarGastoDialogo(this, this)
@@ -43,6 +44,8 @@ class ActividadResumen : AppCompatActivity(), GastoAgregadoListener {
         recyclerView = findViewById(R.id.recyclerView)
         gastoDao = BaseDatosGastos.getInstance(this).gastoDao
         categoria = intent.getStringExtra("categoriaSeleccionada") ?: "Todas"
+        tituloCategoria = findViewById(R.id.tvGastosHormiga)
+        tituloCategoria.text = categoria
 
             btnRegreso = findViewById<FloatingActionButton>(R.id.btnRegresar)
             btnRegreso.setOnClickListener {
@@ -55,11 +58,13 @@ class ActividadResumen : AppCompatActivity(), GastoAgregadoListener {
                 mostrarDialogoAgregarGasto()
             }
 
-        adaptador = AdaptadorGastos(this, listaGastosFlow, this)
+        adaptador = AdaptadorGastos(this, listaGastosFlow, this, this)
         recyclerView!!.layoutManager = LinearLayoutManager(this)
         recyclerView?.adapter = adaptador
 
         obtenerListaGastos(categoria)
+
+        actualizarTotalGastos()
     }
 
     private fun obtenerListaGastos(categoriaSeleccionada: String) {
@@ -72,6 +77,10 @@ class ActividadResumen : AppCompatActivity(), GastoAgregadoListener {
     }
 
     override fun onGastoAgregado() {
+        actualizarTotalGastos()
+    }
+
+    override fun onGastoEliminado() {
         actualizarTotalGastos()
     }
 

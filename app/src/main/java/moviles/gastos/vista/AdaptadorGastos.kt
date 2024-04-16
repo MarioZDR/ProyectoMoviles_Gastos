@@ -26,7 +26,8 @@ import moviles.gastos.utilerias.FormateadorFechas
 class AdaptadorGastos(
     private val lifecycleOwner: LifecycleOwner,
     val listaGastosFlow: MutableStateFlow<List<Gasto>>,
-    private val context: Context
+    private val context: Context,
+    private val listener: GastoEliminadoListener
 ) : RecyclerView.Adapter<AdaptadorGastos.ViewHolder>() {
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -57,6 +58,7 @@ class AdaptadorGastos(
             builder.setPositiveButton("Eliminar") { dialog, _ ->
                 CoroutineScope(Dispatchers.IO).launch {
                     holder.gastoDao.eliminarGasto(gasto)
+                    listener.onGastoEliminado()
                 }
                 dialog.dismiss()
             }
