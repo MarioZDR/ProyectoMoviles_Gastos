@@ -164,17 +164,14 @@ class MainActivity : AppCompatActivity(), CategoriaAgregadaListener, GastoAgrega
         cerrarDialogoAgregarGasto()
     }
 
-    private fun mostrarDialogoAgregarGasto(view: View?) {
-        agregarGastoDialogo.mostrar(obtenerCategoriasDesdeSharedPreferences(), false)
+    fun mostrarDialogoAgregarGasto(view: View?) {
+        agregarGastoDialogo.mostrar(obtenerCategoriasDesdeSharedPreferences(),false)
     }
 
-    private fun cerrarDialogoAgregarGasto() {
+    fun cerrarDialogoAgregarGasto() {
         agregarGastoDialogo.cerrarDialogo()
     }
 
-    companion object {
-        private const val UMBRAL_DE_MOVIMIENTO = 10 // Ajustar dependiendo de qué tanto se debe mover
-    }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
         // Manejar cambios de precisión si es necesario
@@ -188,7 +185,7 @@ class MainActivity : AppCompatActivity(), CategoriaAgregadaListener, GastoAgrega
 
             // Detectar inclinación hacia atrás
             if (yAxis < -8.0f) { // Ajusta este umbral según sea necesario
-                mostrarDialogoAgregarGasto(null)
+                mostrarDialogoAgregarGasto(view = null)
             }
         }
     }
