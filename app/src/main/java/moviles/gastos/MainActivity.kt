@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import moviles.gastos.datos.BaseDatosGastos
 import moviles.gastos.datos.GastoDao
 import moviles.gastos.vista.AdaptadorCategorias
@@ -113,9 +114,14 @@ class MainActivity : AppCompatActivity(), CategoriaAgregadaListener, GastoAgrega
     }
 
     private fun cargarGastos(categoriasList: List<String>) {
-        val customAdapter = AdaptadorCategorias(this,categoriasList.toTypedArray<String>())
-        recyclerView!!.layoutManager = LinearLayoutManager(this)
-        recyclerView!!.adapter = customAdapter
+        CoroutineScope(Dispatchers.IO).launch {
+            val numeroGastos = gastoDao.obtenerMapaDeGastosPorCategoria()
+            withContext(Dispatchers.Main) {
+                val customAdapter = AdaptadorCategorias(this@MainActivity, categoriasList.toTypedArray(), numeroGastos)
+                recyclerView!!.layoutManager = LinearLayoutManager(this@MainActivity)
+                recyclerView!!.adapter = customAdapter
+            }
+        }
     }
 
     private fun configurarSpinner(categoriasList: List<String>) {
@@ -140,14 +146,7 @@ class MainActivity : AppCompatActivity(), CategoriaAgregadaListener, GastoAgrega
 
     override fun onCategoriaAgregada() {
         val categoriasList = obtenerCategoriasDesdeSharedPreferences()
-
-        if(categoriaSeleccionadaLista.equals("Todas")){
-            cargarGastos(categoriasList)
-        }else{
-            val categorias = ArrayList<String>()
-            categorias.add(categoriaSeleccionadaLista)
-            cargarGastos(categorias)
-        }
+        cargarGastosCategoria(categoriasList)
         categoriasList.add(0,"Todas")
         categoriasList.remove(categoriaSeleccionadaLista)
         categoriasList.add(0, categoriaSeleccionadaLista)
@@ -159,13 +158,26 @@ class MainActivity : AppCompatActivity(), CategoriaAgregadaListener, GastoAgrega
         }
     }
 
+    fun cargarGastosCategoria(categoriasList: MutableList<String>){
+        if(categoriaSeleccionadaLista.equals("Todas")){
+            cargarGastos(categoriasList)
+        }else{
+            val categorias = ArrayList<String>()
+            categorias.add(categoriaSeleccionadaLista)
+            cargarGastos(categorias)
+        }
+    }
+
     override fun onGastoAgregado() {
         actualizarTotalGastos(categoriaSeleccionadaLista)
+        cargarGastosCategoria(obtenerCategoriasDesdeSharedPreferences())
         cerrarDialogoAgregarGasto()
     }
 
     fun mostrarDialogoAgregarGasto(view: View?) {
-        agregarGastoDialogo.mostrar(obtenerCategoriasDesdeSharedPreferences(),false)
+        if(!agregarGastoDialogo.estaAbierto()){
+            agregarGastoDialogo.mostrar(obtenerCategoriasDesdeSharedPreferences(),false)
+        }
     }
 
     fun cerrarDialogoAgregarGasto() {

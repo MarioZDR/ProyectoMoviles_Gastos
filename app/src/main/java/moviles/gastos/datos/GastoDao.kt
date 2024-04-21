@@ -22,4 +22,13 @@ interface GastoDao {
 
     @Query("SELECT COALESCE(SUM(total), 0) FROM gasto WHERE categoria=:categoriaBuscar")
     suspend fun obtenerTotalGastosPorCategoria(categoriaBuscar: String): Float
+
+    data class CategoriaConteo(val categoria: String, val conteo: Int)
+
+    @Query("SELECT categoria, COUNT(*) AS conteo FROM gasto GROUP BY categoria")
+    suspend fun obtenerNumeroGastosPorCategoria(): List<CategoriaConteo>
+
+    suspend fun obtenerMapaDeGastosPorCategoria(): Map<String, Int> {
+        return obtenerNumeroGastosPorCategoria().associateBy({ it.categoria }, { it.conteo })
+    }
 }
