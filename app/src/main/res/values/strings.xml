@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">ProyectoFinalMoviles_Gastos</string>
+    <string name="descripci_n">Descripción</string>
+    <string name="total">Total</string>
+    <string name="fecha">Fecha</string>
+    <string name="eliminar">Eliminar</string>
     <string-array name="valores_combobox">
         <item>Todas</item>
         <item>Gastos hormiga</item>
