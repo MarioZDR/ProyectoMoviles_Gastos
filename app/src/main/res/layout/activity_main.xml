@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#4D94FE"
+    android:background="#1429b3"
     tools:context=".MainActivity">
 
     <!-- Header -->
@@ -20,6 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
+            android:textStyle="bold"
             android:text="Registro de gastos"
             android:textColor="@android:color/white"
             android:textSize="24sp" />
@@ -29,6 +30,7 @@
             android:id="@+id/tvTotalGastos"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textStyle="bold"
             android:text="Total de gastos: $"
             android:textSize="18sp"
             android:layout_alignParentBottom="true"
@@ -48,10 +50,12 @@
             <!-- ComboBox -->
             <Spinner
                 android:id="@+id/comboBox"
+                android:backgroundTint="@color/white"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
-                android:layout_marginEnd="8dp"/>
+                android:layout_marginEnd="8dp"
+                />
 
         </LinearLayout>
 
