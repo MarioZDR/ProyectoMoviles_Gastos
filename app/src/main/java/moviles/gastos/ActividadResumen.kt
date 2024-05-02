@@ -25,9 +25,10 @@ import moviles.gastos.datos.Gasto
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import moviles.gastos.vista.AgregarGastoDialogo
 import moviles.gastos.vista.GastoAgregadoListener
+import moviles.gastos.vista.GastoEditadoListener
 import moviles.gastos.vista.GastoEliminadoListener
 
-class ActividadResumen : AppCompatActivity(), GastoAgregadoListener, GastoEliminadoListener,
+class ActividadResumen : AppCompatActivity(), GastoAgregadoListener, GastoEliminadoListener, GastoEditadoListener,
     SensorEventListener {
 
     private lateinit var gastoDao: GastoDao
@@ -66,7 +67,7 @@ class ActividadResumen : AppCompatActivity(), GastoAgregadoListener, GastoElimin
                 mostrarDialogoAgregarGasto()
             }
 
-        adaptador = AdaptadorGastos(this, listaGastosFlow, this, this)
+        adaptador = AdaptadorGastos(this, listaGastosFlow, this, this,this)
         recyclerView!!.layoutManager = LinearLayoutManager(this)
         recyclerView?.adapter = adaptador
 
@@ -141,5 +142,9 @@ class ActividadResumen : AppCompatActivity(), GastoAgregadoListener, GastoElimin
                 textView.text = "Total de gastos: $$total"
             }
         }
+    }
+
+    override fun onGastoEditado() {
+        actualizarTotalGastos()
     }
 }

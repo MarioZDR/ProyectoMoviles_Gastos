@@ -14,7 +14,8 @@
     <TextView
         android:id="@+id/descripcionGasto"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginStart="10dp"
         android:layout_weight="1"
         android:textStyle="bold"
         android:text="@string/descripci_n"/>
@@ -22,21 +23,30 @@
     <TextView
         android:id="@+id/totalGasto"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="1"
         android:text="@string/total"/>
 
     <TextView
         android:id="@+id/fechaGasto"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="1"
         android:text="@string/fecha"/>
 
     <Button
+        android:id="@+id/editarGasto"
+        android:layout_width="29dp"
+        android:layout_height="27dp"
+        android:layout_marginEnd="15dp"
+        android:background="@drawable/edit"
+        android:text="editar" />
+
+    <Button
         android:id="@+id/eliminarGasto"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/eliminar"/>
+        android:layout_width="29dp"
+        android:layout_height="27dp"
+        android:background="@drawable/delete"
+        android:text="@string/eliminar" />
 
 </LinearLayout>
