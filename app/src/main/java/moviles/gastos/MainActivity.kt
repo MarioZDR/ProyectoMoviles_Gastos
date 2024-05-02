@@ -26,9 +26,11 @@ import moviles.gastos.vista.AdaptadorCategorias
 import moviles.gastos.vista.AgregarCategoriaDialogo
 import moviles.gastos.vista.AgregarGastoDialogo
 import moviles.gastos.vista.CategoriaAgregadaListener
+import moviles.gastos.vista.CategoriaEliminadaListener
 import moviles.gastos.vista.GastoAgregadoListener
 
-class MainActivity : AppCompatActivity(), CategoriaAgregadaListener, GastoAgregadoListener, SensorEventListener {
+class MainActivity : AppCompatActivity(), CategoriaAgregadaListener,
+    GastoAgregadoListener, SensorEventListener, CategoriaEliminadaListener {
     private var recyclerView: RecyclerView? = null
     private lateinit var comboBox: Spinner
     private var sharedPreferences: SharedPreferences? = null
@@ -117,7 +119,7 @@ class MainActivity : AppCompatActivity(), CategoriaAgregadaListener, GastoAgrega
         CoroutineScope(Dispatchers.IO).launch {
             val numeroGastos = gastoDao.obtenerMapaDeGastosPorCategoria()
             withContext(Dispatchers.Main) {
-                val customAdapter = AdaptadorCategorias(this@MainActivity, categoriasList.toTypedArray(), numeroGastos)
+                val customAdapter = AdaptadorCategorias(this@MainActivity, categoriasList.toTypedArray(), numeroGastos, this@MainActivity)
                 recyclerView!!.layoutManager = LinearLayoutManager(this@MainActivity)
                 recyclerView!!.adapter = customAdapter
             }
@@ -156,6 +158,14 @@ class MainActivity : AppCompatActivity(), CategoriaAgregadaListener, GastoAgrega
             agregarGastoDialogo.cerrarDialogo()
             agregarGastoDialogo.mostrar(obtenerCategoriasDesdeSharedPreferences(),false)
         }
+    }
+
+    override fun onCategoriaEliminada() {
+        categoriaSeleccionadaLista = "Todas"
+        val categoriasList = obtenerCategoriasDesdeSharedPreferences()
+        cargarGastosCategoria(categoriasList)
+        categoriasList.add(0,"Todas")
+        configurarSpinner(categoriasList)
     }
 
     fun cargarGastosCategoria(categoriasList: MutableList<String>){

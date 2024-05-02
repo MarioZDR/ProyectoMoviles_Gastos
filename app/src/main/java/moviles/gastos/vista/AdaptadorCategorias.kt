@@ -21,7 +21,7 @@ import moviles.gastos.datos.GastoDao
 import java.util.HashSet
 
 class AdaptadorCategorias(private val context: Context, private val dataset: Array<String>,
-    private val numeroGastos: Map<String, Int>) :
+    private val numeroGastos: Map<String, Int>,private val listener: CategoriaEliminadaListener ) :
     RecyclerView.Adapter<AdaptadorCategorias.ViewHolder>() {
     private val sharedPreferences: SharedPreferences = context.getSharedPreferences("categorias", Context.MODE_PRIVATE)
     class ViewHolder(view: View, private val context: Context) : RecyclerView.ViewHolder(view) {
@@ -55,13 +55,13 @@ class AdaptadorCategorias(private val context: Context, private val dataset: Arr
             builder.setMessage("¿Estás seguro de que deseas eliminar esta categoría?")
             builder.setPositiveButton("Eliminar") { dialog, _ ->
             val numGastos = numeroGastos[categoria] ?: 0
-            val categoriaNombre =
 
                 if (numGastos == 0){
                     val categorias: MutableSet<String> = HashSet(sharedPreferences!!.getStringSet("categorias", HashSet()))
                     categorias.remove(categoria)
                     sharedPreferences!!.edit().putStringSet("categorias", categorias).apply()
                     Toast.makeText(context, "Categoría eliminada", Toast.LENGTH_SHORT).show()
+                    listener.onCategoriaEliminada()
                     dialog.dismiss()
                 }else{
                     Toast.makeText(context, "La categoría no tiene que tener gastos", Toast.LENGTH_SHORT).show()

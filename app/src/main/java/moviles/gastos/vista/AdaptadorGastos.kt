@@ -85,6 +85,10 @@ class AdaptadorGastos(
             val editTotal = dialogView.findViewById<EditText>(R.id.totalEditText)
             val categoriaSpinner = dialogView.findViewById<Spinner>(R.id.categoriaSpinner)
             val btnOculto=dialogView.findViewById<Button>(R.id.botonAgregarCategoria)
+
+            editDescripcion.setText(gasto.descripcion)
+            editTotal.setText(gasto.total.toString())
+
             btnOculto.visibility=View.GONE
             categoriaSpinner.visibility=View.GONE
 
