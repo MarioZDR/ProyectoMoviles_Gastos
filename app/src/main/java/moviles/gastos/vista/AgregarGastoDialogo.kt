@@ -55,7 +55,7 @@ class AgregarGastoDialogo(private val context: Context, private val listener: Ga
                     Toast.makeText(context, "Por favor ingrese un total válido y no negativo", Toast.LENGTH_SHORT).show()
                 }
             } else {
-                Toast.makeText(context, "La descripción debe tener al menos 3 caracteres y todos los campos deben estar completos", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "La descripción debe tener al menos 3 caracteres", Toast.LENGTH_SHORT).show()
             }
         }
 
