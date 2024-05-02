@@ -17,7 +17,7 @@ import moviles.gastos.datos.Gasto
 
 class AgregarGastoDialogo(private val context: Context, private val listener: GastoAgregadoListener) {
     private var alertDialog: AlertDialog? = null
-    private val LIMITE_CIFRA_GRANDE = 1000 // Define tu límite aquí
+    private val LIMITE_CIFRA_GRANDE = 1500 // En promedio a una persona asalariada $1500 x semana
 
     fun mostrar(categoriasList: List<String>, quitar: Boolean) {
         val builder = AlertDialog.Builder(context)
@@ -43,7 +43,7 @@ class AgregarGastoDialogo(private val context: Context, private val listener: Ga
             val categoria = categoriaSpinner.selectedItem.toString()
             val totalText = totalEditText.text.toString()
 
-            if (descripcion.length >= 3 && categoria.isNotBlank() && totalText.isNotBlank()) {
+            if (descripcion.isNotBlank() && categoria.isNotBlank() && totalText.isNotBlank()) {
                 val total = totalText.toFloatOrNull()
                 if (total != null && total >= 0) {
                     if (total <= LIMITE_CIFRA_GRANDE) {
@@ -55,7 +55,7 @@ class AgregarGastoDialogo(private val context: Context, private val listener: Ga
                     Toast.makeText(context, "Por favor ingrese un total válido y no negativo", Toast.LENGTH_SHORT).show()
                 }
             } else {
-                Toast.makeText(context, "La descripción debe tener al menos 3 caracteres", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Por favor complete todos los campos", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -78,7 +78,7 @@ class AgregarGastoDialogo(private val context: Context, private val listener: Ga
     private fun mostrarConfirmacionCifraGrande(descripcion: String, total: Float, categoria: String) {
         val builder = AlertDialog.Builder(context)
         builder.setTitle("Confirmación de cifra grande")
-        builder.setMessage("Está seguro de que la cifra es correcta?")
+        builder.setMessage("Está seguro de que la cifra del gasto es correcta?")
 
         builder.setPositiveButton("Sí") { dialog, _ ->
             agregarGasto(descripcion, total, categoria)
