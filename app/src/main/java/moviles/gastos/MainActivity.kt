@@ -211,6 +211,7 @@ class MainActivity : AppCompatActivity(), CategoriaAgregadaListener,
             }
         }
     }
+
 }
 
 

@@ -3,7 +3,6 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("kotlin-kapt")
 }
-
 android {
     namespace = "moviles.gastos"
     compileSdk = 34
