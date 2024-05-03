@@ -38,24 +38,36 @@ class AgregarGastoDialogo(private val context: Context, private val listener: Ga
         categoriaSpinner.adapter = adapter
         categoriaSpinner.setSelection(0)
 
+
+
+
         builder.setPositiveButton("Confirmar") { dialog, _ ->
             val descripcion = descripcionEditText.text.toString().trim()
-            val categoria = categoriaSpinner.selectedItem.toString()
             val totalText = totalEditText.text.toString()
 
-            if (descripcion.length >= 3 && categoria.isNotBlank() && totalText.isNotBlank()) {
-                val total = totalText.toFloatOrNull()
-                if (total != null && total >= 0) {
-                    if (total <= LIMITE_CIFRA_GRANDE) {
-                        agregarGasto(descripcion, total, categoria)
+            if (categoriaSpinner.selectedItem != null) {
+            if (descripcion.length >= 3  && totalText.isNotBlank() ) {
+
+                    val categoria = categoriaSpinner.selectedItem.toString()
+                    val total = totalText.toFloatOrNull()
+                    if (total != null && total >= 0) {
+                        if (total <= LIMITE_CIFRA_GRANDE) {
+                            agregarGasto(descripcion, total, categoria)
+                        } else {
+                            mostrarConfirmacionCifraGrande(descripcion, total, categoria)
+                        }
                     } else {
-                        mostrarConfirmacionCifraGrande(descripcion, total, categoria)
+                        Toast.makeText(
+                            context,
+                            "Por favor ingrese un total válido y no negativo",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
-                } else {
-                    Toast.makeText(context, "Por favor ingrese un total válido y no negativo", Toast.LENGTH_SHORT).show()
+                }else{
+                    Toast.makeText(context, "La descripción debe tener al menos 3 caracteres", Toast.LENGTH_SHORT).show()
                 }
             } else {
-                Toast.makeText(context, "La descripción debe tener al menos 3 caracteres", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Es necesario agregar una categoría", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -64,6 +76,9 @@ class AgregarGastoDialogo(private val context: Context, private val listener: Ga
         alertDialog = builder.create()
         alertDialog?.show()
     }
+
+
+
 
     private fun agregarGasto(descripcion: String, total: Float, categoria: String) {
         val gasto = Gasto(descripcion, total, categoria, System.currentTimeMillis())

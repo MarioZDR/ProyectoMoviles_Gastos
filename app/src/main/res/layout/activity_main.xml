@@ -50,7 +50,7 @@
             <!-- ComboBox -->
             <Spinner
                 android:id="@+id/comboBox"
-                android:backgroundTint="@color/white"
+                android:backgroundTintMode="@color/white"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
