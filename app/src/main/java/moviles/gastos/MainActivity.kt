@@ -127,7 +127,7 @@ class MainActivity : AppCompatActivity(), CategoriaAgregadaListener,
     }
 
     private fun configurarSpinner(categoriasList: List<String>) {
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categoriasList)
+        val adapter = ArrayAdapter(this, R.layout.spinner_item_layout, categoriasList)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         comboBox!!.adapter = adapter
     }
